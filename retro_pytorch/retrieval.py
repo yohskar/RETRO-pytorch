@@ -41,6 +41,12 @@ def range_chunked(max_value, *, batch_size):
 def faiss_read_index(path):
     return faiss.read_index(str(path), faiss.IO_FLAG_MMAP | faiss.IO_FLAG_READ_ONLY)
 
+# oscar 
+model_name = "allenai/longformer-base-4096"
+##tokenizer = AutoTokenizer.from_pretrained(model_name)
+##config = AutoConfig.from_pretrained(model_name)
+##self.transformer = AutoModel.from_pretrained(model_name, config=config)
+
 # singleton globals
 
 MODEL = None
@@ -49,13 +55,18 @@ TOKENIZER = None
 def get_tokenizer():
     global TOKENIZER
     if not exists(TOKENIZER):
-        TOKENIZER = torch.hub.load('huggingface/pytorch-transformers', 'tokenizer', 'bert-base-cased')
+        #TOKENIZER = torch.hub.load('huggingface/pytorch-transformers', 'tokenizer', 'bert-base-cased')
+        # oscar 
+        TOKENIZER = AutoTokenizer.from_pretrained(model_name)
     return TOKENIZER
 
 def get_bert():
     global MODEL
     if not exists(MODEL):
-        MODEL = torch.hub.load('huggingface/pytorch-transformers', 'model', 'bert-base-cased')
+        #MODEL = torch.hub.load('huggingface/pytorch-transformers', 'model', 'bert-base-cased')
+        # oscar 
+        config = AutoConfig.from_pretrained(model_name)
+        MODEL = AutoModel.from_pretrained(model_name, config=config)
         if torch.cuda.is_available():
             MODEL = MODEL.cuda()
 
